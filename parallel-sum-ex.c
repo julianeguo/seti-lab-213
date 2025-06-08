@@ -46,16 +46,16 @@ void* worker(void* arg) {
 
   // This figures out the chunk of the vector I should
   // work on based on my id
-  int mystart = myid * blocksize;
+  int mystart = myid * blocksize; //* start pos = thread id * num of values each thread is summing
   int myend   = 0;
   if (myid == (num_threads - 1)) { // last thread
     // the last thread will take care of the leftover
     // elements of the vector, in case num_threads doesn't
-    // divide vector_len
+    // divide vector_len //* because of floor division, might have leftover elements
     // WARNING: this is a suboptimal solution. It means that the last thread
     // might do much more work than the other threads (up to almost double)
-    // which will slow down the entire job. A better solution would split up
-    // remainder work equally between threads...
+    // which will slow down the entire job. //* A better solution would split up
+    //* remainder work equally between threads...
     myend = vector_len;
   } else {
     myend = (myid + 1) * blocksize;
@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
     int returncode = pthread_create(&(tid[i]),  // thread id gets put here
                                     NULL, // use default attributes
                                     worker, // thread will begin in this function
-                                    (void*)i // we'll give it i as the argument
+                                    (void*)i // we'll give it i as the argument //* in this case i is thread id
                                     );
     if (returncode != 0) {
       perror("Failed to start thread");

@@ -1,0 +1,4 @@
+usage: band_scan text|bin|mmap signal_file Fs filter_order num_bands
+usage: band_scan text|bin|mmap signal_file Fs filter_order num_bands
+usage: band_scan text|bin|mmap signal_file Fs filter_order num_bands
+usage: band_scan text|bin|mmap signal_file Fs filter_order num_bands

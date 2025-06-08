@@ -4,6 +4,7 @@
 
 CC = gcc -g -Wall
 AR = ar
+OPTIMIZATION_FLAGS = -O3 -march=native -ffast-math -funroll-loops -Wall -Wextra -pthread
 
 all: libfilter.a band_scan pthread-ex parallel-sum-ex
 
@@ -11,17 +12,17 @@ libfilter.a : filter.o signal.o timing.o
 	$(AR) ruv libfilter.a filter.o signal.o timing.o
 
 filter.o : filter.c filter.h
-	$(CC) -c filter.c
+	$(CC) $(OPTIMIZATION_FLAGS) -c filter.c
 
 signal.o : signal.c signal.h
-	$(CC) -c signal.c
+	$(CC) $(OPTIMIZATION_FLAGS) -c signal.c
 
 timing.o : timing.c timing.h
-	$(CC) -c timing.c
+	$(CC) $(OPTIMIZATION_FLAGS) -c timing.c
 
 
 band_scan: band_scan.c filter.h signal.h timing.h libfilter.a
-	$(CC) band_scan.c -L. -lfilter -lm -o band_scan
+	$(CC) $(OPTIMIZATION_FLAGS) band_scan.c -L. -lfilter -lm -o band_scan
 
 #
 # Your rule for p_band_scan will look like the following.  Note the use of the
@@ -31,7 +32,7 @@ band_scan: band_scan.c filter.h signal.h timing.h libfilter.a
 #
 #
 p_band_scan: p_band_scan.c filter.h signal.h timing.h libfilter.a
-	    $(CC) -pthread p_band_scan.c -L. -lfilter -lm -o p_band_scan
+	    $(CC) $(OPTIMIZATION_FLAGS) -pthread p_band_scan.c -L. -lfilter -lm -o p_band_scan
 #
 
 clean-filter:

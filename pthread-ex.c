@@ -21,7 +21,9 @@ void* worker(void* arg) {
   // put ourselves on the desired processor
   cpu_set_t set;
   CPU_ZERO(&set);
-  CPU_SET(myid % numproc, &set);
+  CPU_SET(myid % numproc, &set); //* round-robin; e.g. myid (thread's id) = 0, numproc = 4, run on processor 0 % 4 = 0
+                                                            // * e.g. myid = 6, numproc = 4, run on processor 6 % 4 = 2
+                                                            // * e.g. 4 % 4 = 0
   if (sched_setaffinity(0,sizeof(set),&set) < 0) { // do it
     perror("Can't setaffinity");  // hopefully doesn't fail
     exit(-1);
@@ -45,7 +47,8 @@ int main(int argc, char* argv[]) {
   long num = atoi(argv[1]); // number of threads
   numproc = atoi(argv[2]);  // numer of processors to use
 
-  tid = (pthread_t*)malloc(sizeof(pthread_t) * num);
+  //* pthread_t array
+  tid = (pthread_t*)malloc(sizeof(pthread_t) * num); //* tid points to array (size = num), type pthread_t
 
   srand(time(NULL)); // seed random number generator
 
@@ -71,6 +74,8 @@ int main(int argc, char* argv[]) {
   printf("Finished starting threads (%ld started)\n", num_started);
 
   printf("Now joining\n");
+
+  //* I assume this point is when all the child threads finished running and returned
 
   for (long i = 0; i < num; i++) {
     if (tid[i] != 0xdeadbeef) {
